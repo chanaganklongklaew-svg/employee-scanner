@@ -85,9 +85,10 @@ async function sendData(empId){
 
  try{
 
-   const response = await fetch(
-      API_URL,
-      {
+   alert("EmpID : " + empId);
+
+   const response =
+      await fetch(API_URL,{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
@@ -95,25 +96,25 @@ async function sendData(empId){
         body:JSON.stringify({
           empId:empId
         })
-      }
-   );
+      });
 
-   const data =
-      await response.json();
+   alert("HTTP Status : " + response.status);
 
-   showResult(data);
+   const text =
+      await response.text();
+
+   alert(text);
 
  }
  catch(error){
 
+   alert(
+     "ERROR : " +
+     error.message
+   );
+
    console.error(error);
 
-   document.getElementById("result")
-   .innerHTML = `
-   <div class="card error">
-   ❌ เชื่อมต่อ API ไม่สำเร็จ
-   </div>
-   `;
  }
 
 }
