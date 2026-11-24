@@ -62,55 +62,27 @@ body{
 
 <script>
 
-function showResult(data){
+const API_URL =
+"https://script.google.com/macros/s/AKfycby4ZyIHdoGnWXO4qiYJ3-Xt7ZyULB88Iw5UeadgVWOCs61cAAjTJZpzglE9kXh_BLm3/exec";
 
- let html="";
-
- if(data.status==="SUCCESS"){
-
-   html=`
-   <div class="card success">
-   ✅ บันทึกสำเร็จ
-   <br><br>
-
-   ${data.employee.empId}
-   <br>
-
-   ${data.employee.name}
-   <br>
-
-   ${data.employee.department}
-   </div>
-   `;
- }
-
- else if(data.status==="DUPLICATE"){
-
-   html=`
-   <div class="card warning">
-   ⚠ สแกนแล้ววันนี้
-   </div>
-   `;
- }
-
- else{
-
-   html=`
-   <div class="card error">
-   ❌ ไม่พบข้อมูล
-   </div>
-   `;
- }
-
- document.getElementById("result").innerHTML = html;
+/* ส่งข้อมูลไป Apps Script */
+async function sendData(empId){
+   ...
 }
 
+/* แสดงผล */
+function showResult(data){
+   ...
+}
+
+/* เมื่อสแกนสำเร็จ */
 function onScanSuccess(code){
 
    sendData(code);
 
 }
 
+/* เปิด Scanner */
 const scanner =
 new Html5Qrcode("reader");
 
@@ -121,19 +93,16 @@ scanner.start(
  {
    fps:10,
    qrbox:250,
-
    formatsToSupport:[
      Html5QrcodeSupportedFormats.QR_CODE,
      Html5QrcodeSupportedFormats.CODE_128,
      Html5QrcodeSupportedFormats.CODE_39,
      Html5QrcodeSupportedFormats.EAN_13
    ]
-
  },
  onScanSuccess
 );
 
 </script>
-
 </body>
 </html>
