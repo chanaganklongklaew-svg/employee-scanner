@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
@@ -13,41 +14,48 @@ content="width=device-width, initial-scale=1">
 <style>
 
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f6f9;
-  padding:20px;
+ font-family:Arial,sans-serif;
+ background:#f4f6f9;
+ padding:20px;
 }
 
 .container{
-  max-width:500px;
-  margin:auto;
+ max-width:500px;
+ margin:auto;
 }
 
 #reader{
-  background:#fff;
+ background:#ffffff;
+ border-radius:10px;
+ overflow:hidden;
 }
 
 .card{
-  margin-top:20px;
-  padding:15px;
-  border-radius:10px;
+ margin-top:20px;
+ padding:15px;
+ border-radius:10px;
+ font-size:18px;
 }
 
 .success{
-  background:#d4edda;
+ background:#d4edda;
+ color:#155724;
 }
 
 .warning{
-  background:#fff3cd;
+ background:#fff3cd;
+ color:#856404;
 }
 
 .error{
-  background:#f8d7da;
+ background:#f8d7da;
+ color:#721c24;
 }
 
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -62,27 +70,142 @@ body{
 
 <script>
 
+/* -------------------- */
+/* แก้ URL ตรงนี้ */
+/* -------------------- */
+
 const API_URL =
 "https://script.google.com/macros/s/AKfycby4ZyIHdoGnWXO4qiYJ3-Xt7ZyULB88Iw5UeadgVWOCs61cAAjTJZpzglE9kXh_BLm3/exec";
 
-/* ส่งข้อมูลไป Apps Script */
+/* -------------------- */
+
+let scanning = false;
+
 async function sendData(empId){
-   ...
+
+ try{
+
+   const response = await fetch(
+      API_URL,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          empId:empId
+        })
+      }
+   );
+
+   const data =
+      await response.json();
+
+   showResult(data);
+
+ }
+ catch(error){
+
+   console.error(error);
+
+   document.getElementById("result")
+   .innerHTML = `
+   <div class="card error">
+   ❌ เชื่อมต่อ API ไม่สำเร็จ
+   </div>
+   `;
+ }
+
 }
 
-/* แสดงผล */
 function showResult(data){
-   ...
+
+ let html = "";
+
+ if(data.status === "SUCCESS"){
+
+   html = `
+   <div class="card success">
+
+      ✅ บันทึกสำเร็จ
+
+      <br><br>
+
+      <b>รหัส :</b>
+      ${data.employee.empId}
+
+      <br>
+
+      <b>ชื่อ :</b>
+      ${data.employee.name}
+
+      <br>
+
+      <b>แผนก :</b>
+      ${data.employee.department}
+
+   </div>
+   `;
+ }
+
+ else if(data.status === "DUPLICATE"){
+
+   html = `
+   <div class="card warning">
+
+      ⚠ พนักงานสแกนแล้ววันนี้
+
+      <br><br>
+
+      ${data.employee.name}
+
+   </div>
+   `;
+ }
+
+ else if(data.status === "NOTFOUND"){
+
+   html = `
+   <div class="card error">
+
+      ❌ ไม่พบข้อมูลพนักงาน
+
+   </div>
+   `;
+ }
+
+ else{
+
+   html = `
+   <div class="card error">
+
+      ❌ เกิดข้อผิดพลาด
+
+   </div>
+   `;
+ }
+
+ document.getElementById("result")
+ .innerHTML = html;
+
+ setTimeout(()=>{
+    scanning = false;
+ },3000);
+
 }
 
-/* เมื่อสแกนสำเร็จ */
 function onScanSuccess(code){
 
-   sendData(code);
+ if(scanning){
+   return;
+ }
+
+ scanning = true;
+
+ sendData(code);
 
 }
 
-/* เปิด Scanner */
 const scanner =
 new Html5Qrcode("reader");
 
@@ -104,5 +227,7 @@ scanner.start(
 );
 
 </script>
+
 </body>
+
 </html>
