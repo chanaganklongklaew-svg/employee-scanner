@@ -1,83 +1,7 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1">
-
-<title>Employee Scanner</title>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-<style>
-
-body{
- font-family:Arial,sans-serif;
- background:#f4f6f9;
- padding:20px;
-}
-
-.container{
- max-width:500px;
- margin:auto;
-}
-
-#reader{
- background:#ffffff;
- border-radius:10px;
- overflow:hidden;
-}
-
-.card{
- margin-top:20px;
- padding:15px;
- border-radius:10px;
- font-size:18px;
-}
-
-.success{
- background:#d4edda;
- color:#155724;
-}
-
-.warning{
- background:#fff3cd;
- color:#856404;
-}
-
-.error{
- background:#f8d7da;
- color:#721c24;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>ระบบสแกนพนักงาน</h2>
-
-<div id="reader"></div>
-
-<div id="result"></div>
-
-</div>
-
 <script>
-
-/* -------------------- */
-/* แก้ URL ตรงนี้ */
-/* -------------------- */
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwDydTSCQ-LYRovYoNNV9KfsQLri4tH3wicKbzgiHC2eeRva21hT6zOgJawf3rJihjn/exec";
-
-/* -------------------- */
 
 let scanning = false;
 
@@ -86,14 +10,14 @@ async function sendData(empId){
  try{
 
    const response =
-      await fetch(
-        API_URL +
-        "?empId=" +
-        encodeURIComponent(empId)
-      );
+     await fetch(
+       API_URL +
+       "?empId=" +
+       encodeURIComponent(empId)
+     );
 
    const data =
-      await response.json();
+     await response.json();
 
    showResult(data);
 
@@ -101,48 +25,14 @@ async function sendData(empId){
  catch(error){
 
    document.getElementById("result")
-   .innerHTML=
+   .innerHTML =
    `
    <div class="card error">
-     ❌ ${error}
+      ❌ ${error}
    </div>
    `;
- }
 
-}{
-
- try{
-
-   alert("EmpID : " + empId);
-
-   const response =
-      await fetch(API_URL,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-          empId:empId
-        })
-      });
-
-   alert("HTTP Status : " + response.status);
-
-   const text =
-      await response.text();
-
-   alert(text);
-
- }
- catch(error){
-
-   alert(
-     "ERROR : " +
-     error.message
-   );
-
-   console.error(error);
-
+   scanning = false;
  }
 
 }
@@ -175,8 +65,8 @@ function showResult(data){
 
    </div>
    `;
- }
 
+ }
  else if(data.status === "DUPLICATE"){
 
    html = `
@@ -190,8 +80,8 @@ function showResult(data){
 
    </div>
    `;
- }
 
+ }
  else if(data.status === "NOTFOUND"){
 
    html = `
@@ -201,8 +91,8 @@ function showResult(data){
 
    </div>
    `;
- }
 
+ }
  else{
 
    html = `
@@ -212,13 +102,15 @@ function showResult(data){
 
    </div>
    `;
+
  }
 
- document.getElementById("result")
- .innerHTML = html;
+ document.getElementById("result").innerHTML = html;
 
- setTimeout(()=>{
-    scanning = false;
+ setTimeout(() => {
+
+   scanning = false;
+
  },3000);
 
 }
@@ -256,7 +148,3 @@ scanner.start(
 );
 
 </script>
-
-</body>
-
-</html>
