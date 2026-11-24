@@ -1,10 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-...
-</head>
 
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>Employee Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+}
+
+#reader{
+  background:#fff;
+}
+
+.card{
+  margin-top:20px;
+  padding:15px;
+  border-radius:10px;
+}
+
+.success{
+  background:#d4edda;
+}
+
+.warning{
+  background:#fff3cd;
+}
+
+.error{
+  background:#f8d7da;
+}
+
+</style>
+
+</head>
 <body>
-...
+
+<div class="container">
+
+<h2>ระบบสแกนพนักงาน</h2>
+
+<div id="reader"></div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+function showResult(data){
+
+ let html="";
+
+ if(data.status==="SUCCESS"){
+
+   html=`
+   <div class="card success">
+   ✅ บันทึกสำเร็จ
+   <br><br>
+
+   ${data.employee.empId}
+   <br>
+
+   ${data.employee.name}
+   <br>
+
+   ${data.employee.department}
+   </div>
+   `;
+ }
+
+ else if(data.status==="DUPLICATE"){
+
+   html=`
+   <div class="card warning">
+   ⚠ สแกนแล้ววันนี้
+   </div>
+   `;
+ }
+
+ else{
+
+   html=`
+   <div class="card error">
+   ❌ ไม่พบข้อมูล
+   </div>
+   `;
+ }
+
+ document.getElementById("result").innerHTML = html;
+}
+
+function onScanSuccess(code){
+
+  alert("Barcode :"+code);
+
+}
+
+const scanner =
+new Html5Qrcode("reader");
+
+scanner.start(
+ { facingMode:"environment" },
+ {
+   fps:10,
+   qrbox:250
+ },
+ onScanSuccess
+);
+
+</script>
+
 </body>
 </html>
